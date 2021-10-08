@@ -1,0 +1,43 @@
+version: "3.9"
+services:
+  postgres:
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    image: postgres
+    environment:
+      - POSTGRES_USER=arvan
+      - POSTGRES_PASSWORD=arvan
+      - POSTGRES_DB=arvan_db
+    networks:
+      - arvan
+
+  coupon:
+    container_name: coupon
+    ports:
+      - "8081:8080"
+    build: ./arvan-coupon
+    networks:
+      - arvan
+    depends_on:
+      - postgres
+
+  wallet:
+    container_name: wallet
+    ports:
+      - "8080:8080"
+    build: ./arvan-wallet
+    networks:
+      - arvan
+    environment:
+      - POSTGRES_USER=arvan
+      - POSTGRES_PASSWORD=arvan
+      - POSTGRES_DB=arvan_db
+    depends_on:
+      - coupon
+      - postgres
+    links:
+      - coupon
+  
+networks:
+    arvan:

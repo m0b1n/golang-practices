@@ -1,0 +1,4 @@
+.idea
+target
+gorm.db
+.env
